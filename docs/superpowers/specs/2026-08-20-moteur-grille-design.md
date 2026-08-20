@@ -35,8 +35,17 @@ Mots fléchés « pur » (pas de cases noires) :
 - Le mot commence dans la cellule désignée par la flèche et s'écrit
   rectilignement (horizontal ou vertical) jusqu'à la prochaine case-indice
   ou au bord de la grille.
-- Chaque case-lettre appartient à exactement un mot horizontal et un mot
-  vertical.
+- Chaque case-lettre est couverte par **au moins un mot** (horizontal ou
+  vertical) ; elle ne peut jamais appartenir à deux mots du même axe. Les
+  croisements (une case couverte par un mot H ET un mot V) sont un objectif
+  de qualité des grilles, pas une contrainte dure du moteur.
+
+> **Note de conception** : la contrainte « exactement un mot H + un mot V »
+> est impossible avec un plafond de 2 définitions par case — la case coin
+> (0,0) devrait alors porter 4 flèches (→, ↳, ↓, ⬎) pour couvrir (0,1) et
+> (1,0). Les vraies grilles de mots fléchés tolèrent des cellules couvertes
+> par un seul axe ; le moteur fait de même et laisse la densité de
+> croisement à la qualité de la grille.
 
 ### Les quatre flèches
 
@@ -123,8 +132,7 @@ discriminée) :
   dérive les mots depuis les flèches, puis **valide la cohérence** de la
   grille (garde-fous) : bornes respectées, aucun mot traversant une
   case-indice, aucun chevauchement dans un même axe, chaque case-lettre
-  couverte par exactement un mot horizontal et un mot vertical, 1 à 2
-  entrées par case-indice.
+  couverte par au moins un mot, 1 à 2 entrées par case-indice.
 - `setLetter(state, cell, lettre)` → saisie d'une lettre majuscule (A-Z)
   dans une case-lettre.
 - `clearLetter(state, cell)` → efface la saisie d'une case-lettre.
@@ -153,7 +161,7 @@ type GridBuildError =
   | { kind: 'wordOutOfBounds' } // mot qui sort de la grille
   | { kind: 'wordThroughClue' } // mot traversant une case-indice
   | { kind: 'wordOverlap' } // deux mots du même axe se chevauchent
-  | { kind: 'uncoveredCell' } // case-lettre non couverte par H et/ou V
+  | { kind: 'uncoveredCell' } // case-lettre couverte par aucun mot
   | { kind: 'solutionMismatch' }; // longueur de solution invalide
 
 type SetLetterError =
