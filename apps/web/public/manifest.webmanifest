@@ -1,9 +1,10 @@
 {
-  "name": "web",
-  "short_name": "web",
+  "name": "MotsFleches",
+  "short_name": "MotsFleches",
   "display": "standalone",
   "scope": "./",
   "start_url": "./",
+  "theme_color": "#1976d2",
   "icons": [
     {
       "src": "icons/icon-72x72.png",

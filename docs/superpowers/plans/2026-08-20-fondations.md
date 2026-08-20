@@ -586,7 +586,7 @@ Résultat attendu : `apps/web/ngsw-config.json` créé, `manifest.webmanifest` +
 npx nx build web
 ```
 
-Résultat attendu : SUCCESS. Vérifier que `dist/apps/web/browser/ngsw.json` et `dist/apps/web/browser/manifest.webmanifest` existent.
+Résultat attendu : SUCCESS. Vérifier que `dist/mots-fleches/browser/ngsw.json` et `dist/mots-fleches/browser/manifest.webmanifest` existent.
 
 - [ ] **Step 4: Run the web tests (regression)**
 
