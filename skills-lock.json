@@ -1,0 +1,29 @@
+{
+  "version": 1,
+  "skills": {
+    "database-design": {
+      "source": "FrancoStino/opencode-skills-collection",
+      "sourceType": "github",
+      "skillPath": "bundled-skills/database-design/SKILL.md",
+      "computedHash": "412e8f6c0160ce140c5fe3c6489eb0b7c6fa265807e03c6b0d56a9f3ef69a925"
+    },
+    "frontend-design": {
+      "source": "anthropics/skills",
+      "sourceType": "github",
+      "skillPath": "skills/frontend-design/SKILL.md",
+      "computedHash": "93f53fd1c0352d3d7ec17b8f73d7351bf76f4821e55d123c9d2abc2c53ba48e4"
+    },
+    "idea-os": {
+      "source": "FrancoStino/opencode-skills-collection",
+      "sourceType": "github",
+      "skillPath": "bundled-skills/idea-os/SKILL.md",
+      "computedHash": "cecbd709b7117e55df91dc07d25b9897799f8e9b2be24a0e765cbd1505396941"
+    },
+    "software-architecture": {
+      "source": "FrancoStino/opencode-skills-collection",
+      "sourceType": "github",
+      "skillPath": "bundled-skills/software-architecture/SKILL.md",
+      "computedHash": "2ffaf454f3774b398fd1ac564eb3d101c4a4980d0e9fdcf6e9bef303cb155dff"
+    }
+  }
+}
