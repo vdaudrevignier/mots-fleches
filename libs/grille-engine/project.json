@@ -1,0 +1,23 @@
+{
+  "name": "grille-engine",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/grille-engine/src",
+  "projectType": "library",
+  "tags": [],
+  "targets": {
+    "test": {
+      "executor": "@nx/vitest:test",
+      "outputs": ["{workspaceRoot}/coverage/libs/grille-engine"]
+    },
+    "build": {
+      "executor": "@nx/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/libs/grille-engine",
+        "main": "libs/grille-engine/src/index.ts",
+        "tsConfig": "libs/grille-engine/tsconfig.lib.json",
+        "assets": ["libs/grille-engine/*.md"]
+      }
+    }
+  }
+}

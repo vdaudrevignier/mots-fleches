@@ -7,7 +7,8 @@
     "module": "preserve",
     "skipLibCheck": true,
     "paths": {
-      "shared": ["./libs/shared/src/index.ts"]
+      "shared": ["./libs/shared/src/index.ts"],
+      "grille-engine": ["./libs/grille-engine/src/index.ts"]
     }
   }
 }
