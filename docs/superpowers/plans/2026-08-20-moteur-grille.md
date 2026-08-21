@@ -2155,7 +2155,7 @@ export class Grille {
 
 ```ts
 import { TestBed } from '@angular/core/testing';
-import { setLetter } from 'grille-engine';
+import { GameState, setLetter } from 'grille-engine';
 import { Grille } from './grille';
 
 describe('Grille', () => {
@@ -2192,7 +2192,7 @@ describe('Grille', () => {
   it('declenche la victoire quand la solution complete est saisie', async () => {
     const fixture = createComponent();
     const component = fixture.componentInstance as unknown as {
-      state: () => ReturnType<typeof setLetter> extends never ? never : any;
+      state: () => GameState;
     };
     await fixture.whenStable();
     let state = component.state();
@@ -2227,7 +2227,11 @@ export const routes: Routes = [
 ];
 ```
 
-`apps/web/src/app/app.ts` — ajouter `RouterLink` aux imports du décorateur :
+`apps/web/src/app/app.ts` — importer `RouterLink` et l'ajouter aux imports du décorateur :
+
+```ts
+import { RouterOutlet, RouterLink } from '@angular/router';
+```
 
 ```ts
 imports: [RouterOutlet, RouterLink],
