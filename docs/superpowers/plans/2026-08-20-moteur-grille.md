@@ -429,7 +429,7 @@ describe('deriveWords', () => {
   });
 
   it('derives down-right: depart en dessous, ecriture horizontale', () => {
-    const grid = gridFrom(['C..', 'ABC'], { 0: [{ definition: 'd', arrow: 'down-right' }] });
+    const grid = gridFrom(['C..', 'ABD'], { 0: [{ definition: 'd', arrow: 'down-right' }] });
     const result = deriveWords(grid);
     expect(result.ok).toBe(true);
     if (result.ok) {
@@ -460,7 +460,7 @@ describe('deriveWords', () => {
   });
 
   it('echoue en wordOutOfBounds pour un down sur la derniere ligne', () => {
-    const grid = gridFrom(['A'], { 0: [{ definition: 'd', arrow: 'down' }] });
+    const grid = gridFrom(['C'], { 0: [{ definition: 'd', arrow: 'down' }] });
     expect(deriveWords(grid)).toEqual({ ok: false, error: { kind: 'wordOutOfBounds' } });
   });
 
