@@ -1286,11 +1286,11 @@ import { describe, expect, it } from 'vitest';
 import { MockGridKey, buildMockGame } from './mock-grids';
 
 const ANSWERS_6 = [
-  'AU',
+  'NU',
   'OS',
   'LE',
-  'UR',
-  'LU',
+  'OR',
+  'DO',
   'CARRE',
   'A',
   'RA',
@@ -1377,7 +1377,7 @@ export const MOCK_GRID_6: GridDefinition = {
     {
       kind: 'clue',
       entries: [
-        { definition: 'Métal précieux', arrow: 'right' },
+        { definition: 'Sans vêtements', arrow: 'right' },
         { definition: 'Dans le squelette', arrow: 'down' },
       ],
     },
@@ -1387,7 +1387,7 @@ export const MOCK_GRID_6: GridDefinition = {
       kind: 'clue',
       entries: [
         { definition: 'Article défini', arrow: 'right' },
-        { definition: 'Bœuf sauvage', arrow: 'down' },
+        { definition: 'Métal précieux', arrow: 'down' },
       ],
     },
     { kind: 'letter' },
@@ -1396,7 +1396,7 @@ export const MOCK_GRID_6: GridDefinition = {
     {
       kind: 'clue',
       entries: [
-        { definition: 'A été parcouru des yeux', arrow: 'right' },
+        { definition: 'Première note de musique', arrow: 'right' },
         { definition: 'Quatre côtés égaux', arrow: 'down-right' },
       ],
     },
@@ -1464,15 +1464,15 @@ export const MOCK_GRID_6: GridDefinition = {
 export const MOCK_GRID_6_SOLUTION: GridSolution = {
   letters: [
     '',
-    'A',
+    'N',
     'U',
     '',
     'L',
     'E',
     'O',
     '',
-    'L',
-    'U',
+    'D',
+    'O',
     '',
     'A',
     'S',
