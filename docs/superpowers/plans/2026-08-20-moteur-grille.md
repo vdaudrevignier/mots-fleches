@@ -398,7 +398,7 @@ function gridFrom(rows: string[], entries: Record<number, ClueEntry[]>): GridDef
 
 describe('deriveWords', () => {
   it('derives un mot right horizontal arrete par une case-indice', () => {
-    const grid = gridFrom(['CCAB'], { 0: [{ definition: 'd', arrow: 'right' }] });
+    const grid = gridFrom(['CABC'], { 0: [{ definition: 'd', arrow: 'right' }] });
     const result = deriveWords(grid);
     expect(result).toEqual({
       ok: true,
@@ -409,7 +409,7 @@ describe('deriveWords', () => {
           arrow: 'right',
           direction: 'horizontal',
           start: 1,
-          cells: [1],
+          cells: [1, 2],
         },
       ],
     });
@@ -429,27 +429,27 @@ describe('deriveWords', () => {
   });
 
   it('derives down-right: depart en dessous, ecriture horizontale', () => {
-    const grid = gridFrom(['C.', 'ABC'], { 0: [{ definition: 'd', arrow: 'down-right' }] });
+    const grid = gridFrom(['C..', 'ABC'], { 0: [{ definition: 'd', arrow: 'down-right' }] });
     const result = deriveWords(grid);
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value[0]).toMatchObject({
         direction: 'horizontal',
-        start: 2,
-        cells: [2, 3],
+        start: 3,
+        cells: [3, 4, 5],
       });
     }
   });
 
   it('derives right-down: depart a droite, ecriture verticale', () => {
-    const grid = gridFrom(['CA', 'B.', '.D'], { 0: [{ definition: 'd', arrow: 'right-down' }] });
+    const grid = gridFrom(['CA', 'B.', 'B.'], { 0: [{ definition: 'd', arrow: 'right-down' }] });
     const result = deriveWords(grid);
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.value[0]).toMatchObject({
         direction: 'vertical',
         start: 1,
-        cells: [1, 3],
+        cells: [1, 3, 5],
       });
     }
   });
@@ -470,7 +470,7 @@ describe('deriveWords', () => {
   });
 
   it('ignore les cases-lettres sans indice et derive plusieurs entrees dans lordre', () => {
-    const grid = gridFrom(['CAA'], {
+    const grid = gridFrom(['CA', 'B.'], {
       0: [
         { definition: 'h', arrow: 'right' },
         { definition: 'v', arrow: 'down' },
@@ -651,11 +651,11 @@ function solutionFrom(rows: string[]): GridSolution {
   return { letters: rows.join('').split('') };
 }
 
-const VALID_GRID = gridFrom(['CCA', 'AB.'], {
-  0: [{ definition: 'mot de deux lettres', arrow: 'right' }],
-  1: [{ definition: 'mot vertical', arrow: 'down' }],
+const VALID_GRID = gridFrom(['CAB', 'CD.'], {
+  0: [{ definition: 'mot un', arrow: 'right' }],
+  3: [{ definition: 'mot deux', arrow: 'right' }],
 });
-const VALID_SOLUTION = solutionFrom(['XXA', 'BX.']);
+const VALID_SOLUTION = solutionFrom(['.AB', '.CD']);
 
 function expectBuildError(
   rows: string[],
@@ -677,19 +677,19 @@ describe('buildGame', () => {
       id: 0,
       clueIndex: 0,
       direction: 'horizontal',
-      start: 2,
-      cells: [2, 5],
+      start: 1,
+      cells: [1, 2],
       length: 2,
       answer: 'AB',
     });
     expect(result.value.words[1]).toMatchObject({
       id: 1,
-      clueIndex: 1,
-      direction: 'vertical',
-      start: 5,
-      cells: [5],
-      length: 1,
-      answer: 'X',
+      clueIndex: 3,
+      direction: 'horizontal',
+      start: 4,
+      cells: [4, 5],
+      length: 2,
+      answer: 'CD',
     });
     expect(result.value.letters).toEqual([null, null, null, null, null, null]);
     expect(result.value.statuses).toEqual(['empty', 'empty', 'empty', 'empty', 'empty', 'empty']);
@@ -697,33 +697,35 @@ describe('buildGame', () => {
   });
 
   it('ne mute pas les entrees', () => {
-    const grid = gridFrom(['CCA'], { 0: [{ definition: 'd', arrow: 'right' }] });
+    const grid = gridFrom(['CAB'], { 0: [{ definition: 'd', arrow: 'right' }] });
     const snapshot = JSON.stringify(grid);
-    buildGame({ grid, solution: { letters: ['X', 'X', 'X'] } });
+    buildGame({ grid, solution: { letters: ['', 'X', 'X'] } });
     expect(JSON.stringify(grid)).toBe(snapshot);
   });
 
   it('rejette des dimensions invalides', () => {
-    expectBuildError(
-      ['CA'],
-      { 0: [{ definition: 'd', arrow: 'right' }] },
-      ['X', 'X', 'X'],
-      'invalidDimensions',
-    );
     const zero = buildGame({
       grid: { width: 0, height: 0, cells: [] },
       solution: { letters: [] },
     });
     expect(zero).toEqual({ ok: false, error: { kind: 'invalidDimensions' } });
+    const negative = buildGame({
+      grid: { width: 2, height: -1, cells: [] },
+      solution: { letters: [] },
+    });
+    expect(negative).toEqual({ ok: false, error: { kind: 'invalidDimensions' } });
   });
 
   it('rejette un tableau cells de mauvaise longueur', () => {
-    expectBuildError(
-      ['CA.'],
-      { 0: [{ definition: 'd', arrow: 'right' }] },
-      ['X', 'X'],
-      'cellsLength',
-    );
+    const result = buildGame({
+      grid: {
+        width: 2,
+        height: 2,
+        cells: [{ kind: 'letter' }, { kind: 'letter' }, { kind: 'letter' }],
+      },
+      solution: { letters: ['A', 'B', 'C', 'D'] },
+    });
+    expect(result).toEqual({ ok: false, error: { kind: 'cellsLength' } });
   });
 
   it('rejette une solution de mauvaise longueur', () => {
@@ -753,7 +755,7 @@ describe('buildGame', () => {
 
   it('rejette un mot hors bornes', () => {
     expectBuildError(
-      ['AC.'],
+      ['ABC'],
       { 2: [{ definition: 'd', arrow: 'right' }] },
       ['X', 'X', 'X'],
       'wordOutOfBounds',
@@ -763,7 +765,10 @@ describe('buildGame', () => {
   it('rejette un mot dont le depart est une case-indice', () => {
     expectBuildError(
       ['CC.'],
-      { 0: [{ definition: 'd', arrow: 'right' }] },
+      {
+        0: [{ definition: 'a', arrow: 'right' }],
+        1: [{ definition: 'b', arrow: 'right' }],
+      },
       ['X', 'X', 'X'],
       'wordThroughClue',
     );
@@ -771,29 +776,37 @@ describe('buildGame', () => {
 
   it('rejette le chevauchement de deux mots du meme axe', () => {
     expectBuildError(
-      ['CCC.'],
+      ['CC.', '...'],
       {
-        0: [{ definition: 'long', arrow: 'right' }],
-        2: [{ definition: 'court', arrow: 'right' }],
+        0: [{ definition: 'a', arrow: 'down-right' }],
+        1: [{ definition: 'b', arrow: 'down-right' }],
       },
-      ['W', 'X', 'Y', 'Z'],
+      ['A', 'B', 'C', 'D', 'E', 'F'],
       'wordOverlap',
     );
   });
 
-  it('accepte le croisement horizontal + vertical sur une meme case', () => {
-    const grid = gridFrom(['CB', 'A.'], {
-      0: [{ definition: 'h', arrow: 'right' }],
+  it('accepte deux mots du meme axe sans chevauchement et une couverture complete', () => {
+    const grid = gridFrom(['CB', 'B.', 'B.'], {
+      0: [
+        { definition: 'colonne', arrow: 'down' },
+        { definition: 'colonne decalee', arrow: 'right-down' },
+      ],
     });
-    const result = buildGame({ grid, solution: { letters: ['A', 'B', 'C', '.'] } });
+    const result = buildGame({ grid, solution: { letters: ['.', 'A', 'B', 'C', 'D', 'E'] } });
     expect(result.ok).toBe(true);
+    if (!result.ok) return;
+    expect(result.value.words).toHaveLength(2);
   });
 
   it('rejette une case-lettre couverte par aucun mot', () => {
     expectBuildError(
-      ['C.C'],
-      { 0: [{ definition: 'd', arrow: 'right' }] },
-      ['X', 'Y', 'Z'],
+      ['C.C', '...'],
+      {
+        0: [{ definition: 'a', arrow: 'right' }],
+        2: [{ definition: 'b', arrow: 'down' }],
+      },
+      ['A', 'B', 'C', 'D', 'E', 'F'],
       'uncoveredCell',
     );
   });
@@ -969,11 +982,11 @@ function gridFrom(rows: string[], entries: Record<number, ClueEntry[]>): GridDef
 }
 
 function makeGame(): GameState {
-  const grid = gridFrom(['CCA', 'AB.'], {
+  const grid = gridFrom(['CAB', 'CD.'], {
     0: [{ definition: 'deux lettres', arrow: 'right' }],
-    1: [{ definition: 'vertical', arrow: 'down' }],
+    3: [{ definition: 'mot du bas', arrow: 'right' }],
   });
-  const result = buildGame({ grid, solution: { letters: ['A', 'B', 'C', 'D', 'B', '.'] } });
+  const result = buildGame({ grid, solution: { letters: ['', 'A', 'B', '', 'C', 'D'] } });
   if (!result.ok) throw new Error('fixture invalide');
   return result.value;
 }
@@ -981,12 +994,12 @@ function makeGame(): GameState {
 describe('setLetter', () => {
   it('remplit une case-lettre avec statut filled', () => {
     const state = makeGame();
-    const result = setLetter(state, 2, 'C');
+    const result = setLetter(state, 1, 'A');
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.letters[2]).toBe('C');
-      expect(result.value.statuses[2]).toBe('filled');
-      expect(state.letters[2]).toBeNull();
+      expect(result.value.letters[1]).toBe('A');
+      expect(result.value.statuses[1]).toBe('filled');
+      expect(state.letters[1]).toBeNull();
     }
   });
 
@@ -998,17 +1011,17 @@ describe('setLetter', () => {
 
   it('rejette autre chose qu une majuscule A-Z', () => {
     const state = makeGame();
-    expect(setLetter(state, 2, 'a')).toEqual({ ok: false, error: { kind: 'invalidLetter' } });
-    expect(setLetter(state, 2, '1')).toEqual({ ok: false, error: { kind: 'invalidLetter' } });
-    expect(setLetter(state, 2, 'É')).toEqual({ ok: false, error: { kind: 'invalidLetter' } });
+    expect(setLetter(state, 1, 'a')).toEqual({ ok: false, error: { kind: 'invalidLetter' } });
+    expect(setLetter(state, 1, '1')).toEqual({ ok: false, error: { kind: 'invalidLetter' } });
+    expect(setLetter(state, 1, 'É')).toEqual({ ok: false, error: { kind: 'invalidLetter' } });
   });
 
   it('passe la partie en won quand la derniere case correcte est posee', () => {
     const state = makeGame();
-    const step1 = setLetter(state, 2, 'C');
-    const step2 = setLetter(step1.value, 5, 'B');
-    const step3 = setLetter(step2.value, 3, 'D');
-    const step4 = setLetter(step3.value, 4, 'B');
+    const step1 = setLetter(state, 1, 'A');
+    const step2 = setLetter(step1.value, 2, 'B');
+    const step3 = setLetter(step2.value, 4, 'C');
+    const step4 = setLetter(step3.value, 5, 'D');
     expect(step4.value.gameStatus).toBe('won');
     expect(isWon(step4.value)).toBe(true);
   });
@@ -1016,23 +1029,23 @@ describe('setLetter', () => {
   it('rejette toute saisie apres la victoire', () => {
     const state = makeGame();
     const won = setLetter(
-      setLetter(setLetter(setLetter(state, 2, 'C').value, 5, 'B').value, 3, 'D').value,
-      4,
-      'B',
+      setLetter(setLetter(setLetter(state, 1, 'A').value, 2, 'B').value, 4, 'C').value,
+      5,
+      'D',
     ).value;
-    expect(setLetter(won, 2, 'A')).toEqual({ ok: false, error: { kind: 'gameWon' } });
-    expect(clearLetter(won, 2)).toEqual({ ok: false, error: { kind: 'gameWon' } });
+    expect(setLetter(won, 1, 'A')).toEqual({ ok: false, error: { kind: 'gameWon' } });
+    expect(clearLetter(won, 1)).toEqual({ ok: false, error: { kind: 'gameWon' } });
   });
 });
 
 describe('clearLetter', () => {
   it('vide une case remplie', () => {
-    const state = setLetter(makeGame(), 2, 'C').value;
-    const result = clearLetter(state, 2);
+    const state = setLetter(makeGame(), 1, 'A').value;
+    const result = clearLetter(state, 1);
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.letters[2]).toBeNull();
-      expect(result.value.statuses[2]).toBe('empty');
+      expect(result.value.letters[1]).toBeNull();
+      expect(result.value.statuses[1]).toBe('empty');
     }
   });
 
@@ -1043,12 +1056,13 @@ describe('clearLetter', () => {
 
 describe('validateWord', () => {
   it('marque correct les bonnes lettres et wrong les mauvaises, conservees', () => {
-    const state = setLetter(makeGame(), 2, 'C').value;
+    const state = setLetter(makeGame(), 1, 'Z').value;
     const result = validateWord(state, 0);
     expect(result.ok).toBe(true);
     if (result.ok) {
-      expect(result.value.statuses[2]).toBe('wrong');
-      expect(result.value.letters[2]).toBe('C');
+      expect(result.value.statuses[1]).toBe('wrong');
+      expect(result.value.letters[1]).toBe('Z');
+      expect(result.value.statuses[2]).toBe('empty');
     }
   });
 
@@ -1061,19 +1075,20 @@ describe('validateWord', () => {
 
 describe('validateAll', () => {
   it('marque toute la grille et laisse les cases vides en empty', () => {
-    const state = setLetter(makeGame(), 2, 'C').value;
+    const state = setLetter(makeGame(), 1, 'Z').value;
     const next = validateAll(state);
-    expect(next.statuses[2]).toBe('wrong');
+    expect(next.statuses[1]).toBe('wrong');
+    expect(next.statuses[2]).toBe('empty');
+    expect(next.statuses[4]).toBe('empty');
     expect(next.statuses[5]).toBe('empty');
-    expect(next.statuses[3]).toBe('empty');
   });
 
   it('declare la victoire quand tout est correct', () => {
     let state = makeGame();
-    state = setLetter(state, 2, 'C').value;
-    state = setLetter(state, 5, 'B').value;
-    state = setLetter(state, 3, 'D').value;
-    state = setLetter(state, 4, 'B').value;
+    state = setLetter(state, 1, 'A').value;
+    state = setLetter(state, 2, 'B').value;
+    state = setLetter(state, 4, 'C').value;
+    state = setLetter(state, 5, 'D').value;
     expect(validateAll(state).gameStatus).toBe('won');
   });
 });
@@ -1082,10 +1097,10 @@ describe('isWon', () => {
   it('est fausse au demarrage et vraie quand tout est juste', () => {
     expect(isWon(makeGame())).toBe(false);
     let state = makeGame();
-    state = setLetter(state, 2, 'C').value;
-    state = setLetter(state, 5, 'B').value;
-    state = setLetter(state, 3, 'D').value;
-    state = setLetter(state, 4, 'B').value;
+    state = setLetter(state, 1, 'A').value;
+    state = setLetter(state, 2, 'B').value;
+    state = setLetter(state, 4, 'C').value;
+    state = setLetter(state, 5, 'D').value;
     expect(isWon(state)).toBe(true);
   });
 });
@@ -1093,7 +1108,7 @@ describe('isWon', () => {
 describe('reset', () => {
   it('vide toute la saisie et repasse en playing', () => {
     let state = makeGame();
-    state = setLetter(state, 2, 'C').value;
+    state = setLetter(state, 1, 'A').value;
     state = validateAll(state);
     const fresh = reset(state);
     expect(fresh.letters.every((l) => l === null)).toBe(true);
@@ -1106,14 +1121,14 @@ describe('reset', () => {
 describe('selecteurs', () => {
   it('wordsAtCell retourne les mots couvrant une case', () => {
     const state = makeGame();
-    expect(wordsAtCell(state, 5).map((w) => w.id)).toEqual([0, 1]);
-    expect(wordsAtCell(state, 2).map((w) => w.id)).toEqual([0]);
+    expect(wordsAtCell(state, 1).map((w) => w.id)).toEqual([0]);
+    expect(wordsAtCell(state, 4).map((w) => w.id)).toEqual([1]);
   });
 
   it('wordsFromClue retourne les mots d une case-indice dans lordre des entrees', () => {
     const state = makeGame();
     expect(wordsFromClue(state, 0).map((w) => w.id)).toEqual([0]);
-    expect(wordsFromClue(state, 1).map((w) => w.id)).toEqual([1]);
+    expect(wordsFromClue(state, 3).map((w) => w.id)).toEqual([1]);
   });
 });
 ```
