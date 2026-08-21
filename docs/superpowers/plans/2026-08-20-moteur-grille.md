@@ -951,7 +951,7 @@ git commit -m "feat(grille-engine): buildGame with grid coherence guards"
 
 ```ts
 import { describe, expect, it } from 'vitest';
-import { ClueEntry, GridDefinition, GridSolution } from 'shared';
+import { ClueEntry, GridDefinition } from 'shared';
 import { buildGame } from './build-game';
 import { GameState } from './types';
 import {
