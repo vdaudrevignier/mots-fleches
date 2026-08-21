@@ -1,0 +1,26 @@
+<div class="barre">
+  <button type="button" (click)="verifier()">Vérifier</button>
+  <button type="button" (click)="rejouer()">Rejouer</button>
+  <span class="separateur"></span>
+  <button type="button" (click)="switchGrid('6')">6×6</button>
+  <button type="button" (click)="switchGrid('10')">10×10</button>
+</div>
+
+@if (state().gameStatus === 'won') {
+  <p class="victoire">Gagné ! Bravo.</p>
+}
+
+<div class="cadre">
+  <div class="grille" [style.grid-template-columns]="'repeat(' + columns() + ', 1fr)'">
+    @for (cell of state().grid.cells; track $index) {
+      <app-cellule
+        [cell]="cell"
+        [letter]="state().letters[$index]"
+        [status]="state().statuses[$index]"
+        [selected]="selectedCell() === $index"
+        [inSelectedWord]="selectedWord()?.cells.includes($index) ?? false"
+        (cellClick)="onCellClick($index)"
+      />
+    }
+  </div>
+</div>

@@ -1,0 +1,26 @@
+.entete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid #ddd6c8;
+
+  h1 {
+    margin: 0;
+    font-size: 1.4rem;
+  }
+
+  a {
+    color: #1a73e8;
+    text-decoration: none;
+    font-weight: 600;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
+main {
+  padding: 0.5rem;
+}

@@ -1,0 +1,51 @@
+:host {
+  display: block;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.barre {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+
+  button {
+    padding: 0.4rem 0.9rem;
+    border: 1px solid #b8b2a7;
+    border-radius: 6px;
+    background: #fffdf7;
+    font: inherit;
+    cursor: pointer;
+
+    &:hover {
+      background: #f1ead9;
+    }
+  }
+
+  .separateur {
+    flex: 1;
+  }
+}
+
+.victoire {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e7d32;
+  background: #e6f4ea;
+  border: 1px solid #1e7d32;
+  border-radius: 8px;
+  padding: 0.6rem 1rem;
+}
+
+.cadre {
+  border: 2px solid #6b6357;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.grille {
+  display: grid;
+  width: 100%;
+}
