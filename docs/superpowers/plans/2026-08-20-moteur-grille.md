@@ -1321,18 +1321,18 @@ const ANSWERS_10 = [
   'FI',
   'UNI',
   'NE',
-  'IL',
+  'ON',
   'TAU',
-  'QI',
+  'IL',
   'RE',
   'IRE',
-  'UN',
+  'QI',
   'MA',
   'OSA',
-  'EN',
+  'UN',
   'AN',
   'NID',
-  'SA',
+  'EN',
   'NU',
   'NET',
   'SI',
@@ -1368,7 +1368,7 @@ Expected: FAIL — `./mock-grids` introuvable.
 
 ```ts
 import { buildGame } from 'grille-engine';
-import { GridCell, GridDefinition, GridSolution } from 'shared';
+import { GridDefinition, GridSolution } from 'shared';
 
 export const MOCK_GRID_6: GridDefinition = {
   width: 6,
@@ -1416,7 +1416,6 @@ export const MOCK_GRID_6: GridDefinition = {
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
-    { kind: 'letter' },
     {
       kind: 'clue',
       entries: [
@@ -1452,6 +1451,7 @@ export const MOCK_GRID_6: GridDefinition = {
         { definition: 'Lettre', arrow: 'down' },
       ],
     },
+    { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
@@ -1574,7 +1574,7 @@ export const MOCK_GRID_10: GridDefinition = {
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
-    { kind: 'clue', entries: [{ definition: 'Indice d intelligence', arrow: 'right' }] },
+    { kind: 'clue', entries: [{ definition: 'Pronom sujet masculin', arrow: 'right' }] },
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'clue', entries: [{ definition: 'Note de musique', arrow: 'right' }] },
@@ -1584,7 +1584,7 @@ export const MOCK_GRID_10: GridDefinition = {
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
-    { kind: 'clue', entries: [{ definition: 'Nombre', arrow: 'right' }] },
+    { kind: 'clue', entries: [{ definition: 'Énergie vitale en Chine', arrow: 'right' }] },
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'clue', entries: [{ definition: 'Mon, au féminin', arrow: 'right' }] },
@@ -1594,7 +1594,7 @@ export const MOCK_GRID_10: GridDefinition = {
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
-    { kind: 'clue', entries: [{ definition: 'Préposition ou pronom', arrow: 'right' }] },
+    { kind: 'clue', entries: [{ definition: 'Pronom indéfini', arrow: 'right' }] },
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'clue', entries: [{ definition: 'Douze mois', arrow: 'right' }] },
@@ -1604,7 +1604,7 @@ export const MOCK_GRID_10: GridDefinition = {
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'letter' },
-    { kind: 'clue', entries: [{ definition: 'Son, au féminin', arrow: 'right' }] },
+    { kind: 'clue', entries: [{ definition: 'Préposition', arrow: 'right' }] },
     { kind: 'letter' },
     { kind: 'letter' },
     { kind: 'clue', entries: [{ definition: 'Sans vêtements', arrow: 'right' }] },
@@ -1740,8 +1740,6 @@ export function buildMockGame(key: MockGridKey) {
     : buildGame({ grid: MOCK_GRID_10, solution: MOCK_GRID_10_SOLUTION });
 }
 ```
-
-Note : le type `GridCell` est utilisé implicitement via `GridDefinition` ; si ESLint signale un import inutilisé, retirer `GridCell` de l'import.
 
 - [ ] **Step 3: Vérifier que les tests passent**
 
