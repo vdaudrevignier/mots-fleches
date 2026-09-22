@@ -16,6 +16,7 @@
       [class.in-word]="inSelectedWord()"
       [class.correct]="status() === 'correct'"
       [class.wrong]="status() === 'wrong'"
+      [attr.aria-label]="ariaLabel()"
       (click)="cellClick.emit()"
     >
       {{ letter() ?? '' }}

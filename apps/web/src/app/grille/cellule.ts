@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { GridCell } from 'shared';
 
 const ARROW_GLYPHS: Record<string, string> = {
@@ -21,6 +21,11 @@ export class Cellule {
   readonly selected = input(false);
   readonly inSelectedWord = input(false);
   readonly cellClick = output<void>();
+
+  protected readonly ariaLabel = computed(() => {
+    const l = this.letter();
+    return `case-lettre, ${l ? `lettre ${l}` : 'vide'}`;
+  });
 
   protected glyph(arrow: string): string {
     return ARROW_GLYPHS[arrow] ?? '?';
