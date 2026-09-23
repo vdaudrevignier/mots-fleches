@@ -1,0 +1,25 @@
+@if (cell(); as c) {
+  @if (c.kind === 'clue') {
+    <button type="button" class="case-indice" (click)="cellClick.emit()">
+      @for (entry of c.entries; track $index) {
+        <span class="definition">
+          <span class="fleche">{{ glyph(entry.arrow) }}</span>
+          {{ entry.definition }}
+        </span>
+      }
+    </button>
+  } @else {
+    <button
+      type="button"
+      class="case-lettre"
+      [class.selected]="selected()"
+      [class.in-word]="inSelectedWord()"
+      [class.correct]="status() === 'correct'"
+      [class.wrong]="status() === 'wrong'"
+      [attr.aria-label]="ariaLabel()"
+      (click)="cellClick.emit()"
+    >
+      {{ letter() ?? '' }}
+    </button>
+  }
+}
